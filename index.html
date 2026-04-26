@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>試験問題学習アプリ</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Mammoth.js for DOCX parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Upload View -->
+    <div id="upload-view" class="view active glass-panel">
+        <div class="upload-content">
+            <h1>試験問題学習アプリ</h1>
+            <p>Wordファイル(.docx)から問題・図表・解説を完全に自動展開します。<br>ファイルはサーバーに送信されず、安全にブラウザ上で処理されます。</p>
+            <div class="file-upload-wrapper">
+                <input type="file" id="docx-input" accept=".docx">
+                <label for="docx-input" class="upload-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Word(.docx)ファイルを選択
+                </label>
+            </div>
+            <div id="loading-state" class="hidden">
+                <div class="spinner"></div>
+                <p>問題を解析中... <span id="parse-progress">0%</span></p>
+            </div>
+            <div id="upload-error" class="error-msg hidden"></div>
+        </div>
+    </div>
+
+    <!-- Main App Layout -->
+    <div id="app-view" class="view hidden">
+        <nav class="sidebar glass-panel">
+            <div class="sidebar-header">
+                <h2 id="app-sidebar-title">問題リスト</h2>
+                <div class="stats">全 <span id="total-q">0</span> 問</div>
+            </div>
+            <div class="controls">
+                <button id="btn-back-to-list" class="control-btn hidden">← 一覧に戻る</button>
+            </div>
+            <div class="question-grid" id="question-grid">
+                <!-- Grid items injected by JS -->
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Question ListView -->
+            <div id="list-view-content" class="glass-panel content-panel active">
+                <div class="welcome-header">
+                    <h2>学習リスト</h2>
+                    <p>左側のグリッドから問題を選択して学習を開始してください。</p>
+                </div>
+            </div>
+
+            <!-- Single Question View -->
+            <div id="question-view-content" class="glass-panel content-panel hidden">
+                <header class="q-header">
+                    <h2 id="q-title">Question 1</h2>
+                    <div class="q-actions">
+                        <!-- Image modal removed as images are now inline -->
+                    </div>
+                </header>
+                
+                <div class="q-body">
+                    <div id="q-text" class="text-content"></div>
+                </div>
+
+                <div class="q-answer-section">
+                    <button id="btn-reveal" class="reveal-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        解答と解説を表示
+                    </button>
+                    
+                    <div id="answer-content" class="hidden">
+                        <div class="answer-box">
+                            <h3>Answer</h3>
+                            <p id="q-answer-text" class="text-highlight"></p>
+                        </div>
+                        
+                        <div class="explanation-box">
+                            <div class="exp-header">
+                                <h3>Explanation</h3>
+                                <button id="btn-translate" class="action-btn small">🇯🇵 日本語に翻訳</button>
+                            </div>
+                            <div id="q-explanation-text" class="text-content"></div>
+                            <div id="translation-loading" class="hidden"><div class="spinner small"></div> 翻訳中...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="q-footer">
+                    <button id="btn-prev" class="nav-btn outline">前の問題</button>
+                    <button id="btn-next" class="nav-btn primary">次の問題</button>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
